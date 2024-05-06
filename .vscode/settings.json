@@ -1,0 +1,16 @@
+{
+	"python.autoComplete.extraPaths": [
+		"/home/oem/ros2_ws/install/robot_description/lib/python3.10/site-packages",
+		"/home/oem/ros2_ws/install/my_robot_controller/lib/python3.10/site-packages",
+		"/home/oem/ros2_ws/install/bouncy_bot/local/lib/python3.10/dist-packages",
+		"/opt/ros/humble/lib/python3.10/site-packages",
+		"/opt/ros/humble/local/lib/python3.10/dist-packages"
+	],
+	"python.analysis.extraPaths": [
+		"/home/oem/ros2_ws/install/robot_description/lib/python3.10/site-packages",
+		"/home/oem/ros2_ws/install/my_robot_controller/lib/python3.10/site-packages",
+		"/home/oem/ros2_ws/install/bouncy_bot/local/lib/python3.10/dist-packages",
+		"/opt/ros/humble/lib/python3.10/site-packages",
+		"/opt/ros/humble/local/lib/python3.10/dist-packages"
+	]
+}
