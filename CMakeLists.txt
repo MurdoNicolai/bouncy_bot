@@ -10,12 +10,11 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(rclpy REQUIRED)
 find_package(urdf REQUIRED)
 find_package(xacro REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
 if(BUILD_TESTING)
@@ -37,12 +36,11 @@ install(FILES package.xml DESTINATION share/${PROJECT_NAME})
 install(DIRECTORY urdf/ DESTINATION share/${PROJECT_NAME}/urdf FILES_MATCHING PATTERN "*")
 install(DIRECTORY rviz/ DESTINATION share/${PROJECT_NAME}/rviz FILES_MATCHING PATTERN "*.rviz")
 install(DIRECTORY meshes/ DESTINATION share/${PROJECT_NAME}/meshes FILES_MATCHING PATTERN "*.stl")
-install(DIRECTORY launch/ DESTINATION share/${PROJECT_NAME}/launch FILES_MATCHING PATTERN "*.launch.*")
+install(DIRECTORY launches/ DESTINATION share/${PROJECT_NAME}/launch FILES_MATCHING PATTERN "*.launch.*")
 
 
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/AllPos.msg"
-  DEPENDENCIES geometry_msgs std_msgs
-)
-
+# rosidl_generate_interfaces(${PROJECT_NAME}
+#   "msg/Entity.msg"
+#   DEPENDENCIES std_msgs
+# )
 ament_package()

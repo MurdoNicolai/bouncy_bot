@@ -1,70 +1,86 @@
 <?xml version="1.0"?>
 <robot>
-	<gazebo reference="outer_ball">
-	    <visual>
-	        <material>
-	            <ambient>0.3 0.0 0.3 0.5</ambient>
-	            <diffuse>0.3 0.0 0.3 0.5</diffuse>
-	            <specular>0.0 0.0 0.0 0.5</specular>
-	            <emissive>0.0 0.0 0.0 0.5</emissive>
-	        </material>
-	    </visual>
-		<velocity_decay>
-			<linear>0.1</linear>
-			<angular>0.1</angular>
-		</velocity_decay>
-		<collision>
-			<surface>
-				<bounce>
-					<restitution_coefficient>1</restitution_coefficient>
-					<threshold>0.1 </threshold>
-				</bounce>
-				<friction>
-        	  		<torsional>
-        	  		  <coefficient>0.2</coefficient>
-        	  		  <surface_radius>0.5</surface_radius>
-        	  		  <use_patch_radius>false</use_patch_radius>
-        	  		</torsional>
-				</friction>
-        		<contact>
-					<poissons_ratio>0.49</poissons_ratio>
-					<elastic_modulus>0.3</elastic_modulus>
-        		</contact>
-        	</surface>
-		</collision>
-	</gazebo>
-	<gazebo reference="rotation_engin">
-	    <visual>
-	        <material>
-	            <ambient>0.0 0.5 0.3 1.0</ambient>
-	            <diffuse>0.0 0.5 0.3 1.0</diffuse>
-	            <specular>0.0 0.0 0.0 1.0</specular>
-	            <emissive>0.0 0.0 0.0 1.0</emissive>
-	        </material>
-	    </visual>
-	</gazebo>
-	<gazebo reference="rotating_arm2">
-	    <visual>
-	        <material>
-	            <ambient>0.5 0.5 0.5 1.0</ambient>
-	            <diffuse>0.5 0.5 0.5 1.0</diffuse>
-	            <specular>0.0 0.0 0.0 1.0</specular>
-	            <emissive>0.0 0.0 0.0 1.0</emissive>
-	        </material>
-	    </visual>
-	</gazebo>
-	<gazebo reference="rotating_arm1">
-	    <visual>
-	        <material>
-	            <ambient>0.5 0.5 0.5 1.0</ambient>
-	            <diffuse>0.5 0.5 0.5 1.0</diffuse>
-	            <specular>0.0 0.0 0.0 1.0</specular>
-	            <emissive>0.0 0.0 0.0 1.0</emissive>
-	        </material>
-	    </visual>
-	</gazebo>
-	<!-- Jump Plugin -->
-	<gazebo>
+    <gazebo reference="outer_ball">
+        <visual>
+            <material>
+                <ambient>0.3 0.0 0.3 0.5</ambient>
+                <diffuse>0.3 0.0 0.3 0.5</diffuse>
+                <specular>0.0 0.0 0.0 0.5</specular>
+                <emissive>0.0 0.0 0.0 0.5</emissive>
+            </material>
+        </visual>
+        <velocity_decay>
+            <linear>0.1</linear>
+            <angular>0.1</angular>
+        </velocity_decay>
+        <collision>
+            <surface>
+            <bounce>
+            <restitution_coefficient>1</restitution_coefficient>
+            <threshold>0.1 </threshold>
+            </bounce>
+            <friction>
+                <torsional>
+                  <coefficient>0.2</coefficient>
+                  <surface_radius>0.5</surface_radius>
+                  <use_patch_radius>false</use_patch_radius>
+                </torsional>
+            </friction>
+                <contact>
+            <poissons_ratio>0.49</poissons_ratio>
+            <elastic_modulus>0.3</elastic_modulus>
+                </contact>
+                </surface>
+        </collision>
+
+        <sensor name="imu" type="imu">
+              <always_on>1</always_on>
+              <update_rate>100</update_rate>
+              <visualize>true</visualize>
+              <topic>imu</topic>
+              <enable_metrics>true</enable_metrics>
+        </sensor>
+    </gazebo>
+
+    <gazebo>
+        <plugin
+          filename="ignition-gazebo-imu-system"
+          name="gz::sim::systems::Imu">
+        </plugin>
+    </gazebo>
+
+    <gazebo reference="rotation_engin">
+        <visual>
+            <material>
+                <ambient>0.0 0.5 0.3 1.0</ambient>
+                <diffuse>0.0 0.5 0.3 1.0</diffuse>
+                <specular>0.0 0.0 0.0 1.0</specular>
+                <emissive>0.0 0.0 0.0 1.0</emissive>
+            </material>
+        </visual>
+    </gazebo>
+    <gazebo reference="rotating_arm2">
+        <visual>
+            <material>
+                <ambient>0.5 0.5 0.5 1.0</ambient>
+                <diffuse>0.5 0.5 0.5 1.0</diffuse>
+                <specular>0.0 0.0 0.0 1.0</specular>
+                <emissive>0.0 0.0 0.0 1.0</emissive>
+            </material>
+        </visual>
+    </gazebo>
+    <gazebo reference="rotating_arm1">
+        <visual>
+            <material>
+                <ambient>0.5 0.5 0.5 1.0</ambient>
+                <diffuse>0.5 0.5 0.5 1.0</diffuse>
+                <specular>0.0 0.0 0.0 1.0</specular>
+                <emissive>0.0 0.0 0.0 1.0</emissive>
+            </material>
+        </visual>
+    </gazebo>
+    <!-- Jump Plugin -->
+    <gazebo>
       <plugin
         filename="ignition-gazebo-joint-position-controller-system"
         name="gz::sim::systems::JointPositionController">
@@ -78,33 +94,34 @@
         <cmd_max>1000</cmd_max>
         <cmd_min>-1000</cmd_min>
       </plugin>
-	</gazebo>
+    </gazebo>
 
-	<!-- movement Plugins for arms-->
-	<gazebo>
+    <!-- movement Plugins for arms-->
+    <gazebo>
       <plugin
         filename="ignition-gazebo-joint-controller-system"
         name="gz::sim::systems::JointController">
         <topic>rot1_cmd</topic>
-		<initial_velocity>0</initial_velocity>
+    <initial_velocity>0</initial_velocity>
         <joint_name>joint_pull_engin_rotating_arm1</joint_name>
         <use_force_commands>false</use_force_commands>
       </plugin>
-	</gazebo>
-	<gazebo>
+    </gazebo>
+    <gazebo>
       <plugin
         filename="ignition-gazebo-joint-controller-system"
         name="gz::sim::systems::JointController">
         <topic>rot2_cmd</topic>
-		<initial_velocity>0</initial_velocity>
+    <initial_velocity>0</initial_velocity>
         <joint_name>joint_pull_engin_rotating_arm2</joint_name>
         <use_force_commands>false</use_force_commands>
       </plugin>
-	</gazebo>
+    </gazebo>
 
 
-	<!-- Rotate center Plugin -->
-	<gazebo>
+
+    <!-- Rotate center Plugin -->
+    <gazebo>
       <plugin
         filename="ignition-gazebo-joint-position-controller-system"
         name="gz::sim::systems::JointPositionController">
@@ -118,36 +135,20 @@
         <cmd_max>1000</cmd_max>
         <cmd_min>-1000</cmd_min>
       </plugin>
-	</gazebo>
+    </gazebo>
 
   <!-- Get Join state-->
-  	<gazebo>
+        <gazebo>
       <plugin filename="ignition-gazebo-pose-publisher-system"
         name="gz::sim::systems::PosePublisher">
         <publish_link_pose>true</publish_link_pose>
-		<publish_model_pose>true</publish_model_pose>
-		<use_pose_vector_msg>true</use_pose_vector_msg>
+    <publish_model_pose>true</publish_model_pose>
+    <use_pose_vector_msg>true</use_pose_vector_msg>
         <publish_collision_pose>false</publish_collision_pose>
         <publish_visual_pose>false</publish_visual_pose>
         <publish_nested_model_pose>false</publish_nested_model_pose>
-		</plugin>
-	</gazebo>
-
-
-	<!-- IMU Plugin -->
-	<gazebo>
-    	<plugin
-    	  filename="ignition-gazebo-imu-system"
-    	  name="gz::sim::systems::Imu">
-    	</plugin>
-	</gazebo>
-	<gazebo reference="outer_ball">
-	    <sensor name="imu_sensor" type="imu">
-	        <always_on>1</always_on>
-	        <update_rate>20</update_rate>
-	        <topic>imu</topic>
-	    </sensor>
-	</gazebo>
+    </plugin>
+    </gazebo>
 
 
 </robot>
