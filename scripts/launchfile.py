@@ -2,16 +2,18 @@ import os
 import random
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, ExecuteProcess
+from launch.actions import DeclareLaunchArgument
 from launch.substitutions import Command, LaunchConfiguration
 from launch_ros.actions import Node, SetParameter
 
 def generate_launch_description():
     # Get Package Directory
     package_directory = get_package_share_directory("bouncy_bot")
+    print("Launch1")
 
     # Load URDF File
     urdf_file = os.path.join(package_directory, "urdf", "bouncy.xacro")
+    print("Launch5")
 
     # Robot State Publisher Node
     robot_state_publisher_node = Node(
@@ -21,6 +23,7 @@ def generate_launch_description():
         output='screen',
         parameters=[{'use_sim_time': True}, {'robot_description': Command(['xacro ', urdf_file])}]
     )
+    print("Launch6")
 
     # Generate Random Spawn Coordinates
     randx = random.uniform(-0.5, 0.5)
@@ -69,15 +72,8 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Kill any existing gz_spawn_entity nodes
-    kill_existing_gz_spawn = ExecuteProcess(
-        cmd=['pkill', '-f', 'gz_spawn_entity'],
-        output='screen'
-    )
-
     # Launch Description
     ld = LaunchDescription([
-        # kill_existing_gz_spawn,
         SetParameter(name='use_sim_time', value=True),
         robot_state_publisher_node,
         declare_spawn_x,

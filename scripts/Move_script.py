@@ -7,7 +7,7 @@ from tf2_msgs.msg import TFMessage
 import threading
 import math
 
-class Environment(Node):
+class Move(Node):
 
 
     def __init__(self):
@@ -42,6 +42,15 @@ class Environment(Node):
         self.jump_pub = self.create_publisher(msg_type=Float64,
                                                  topic="/jump_cmd",
                                                  qos_profile=1)
+
+        # Start a thread to handle user input
+        # self.class_thread = threading.Thread(target=self.process_input)
+        # self.class_thread.daemon = True
+        # self.class_thread.start()
+        self.reset()
+        print("ok")
+
+    def reset(self):
         self.speed_arm1 = 0.0
         self.speed_arm2 = 0.0
         self.angle = 0.0
@@ -49,17 +58,24 @@ class Environment(Node):
         self.arm1_pos = 0.0
         self.arm2_pos = 0.0
         self.total_movement = 0.0
+        self.max_movement = 0.0
 
-
-        # Start a thread to handle user input
-        self.input_thread = threading.Thread(target=self.process_input)
-        self.input_thread.daemon = True
-        self.input_thread.start()
+        self.orx = 0.0
+        self.ory = 0.0
+        self.orz = 0.0
+        self.orw = 0.0
+        self.angleX = 0.0
+        self.angleY = 0.0
+        self.angleZ = 0.0
 
         self.jump()
 
-        # Spin the node
-        rclpy.spin(self)
+
+    def return_state(self):
+        return (self.speed_arm1, self.speed_arm2, self.angle,
+                int(self.jump_preped), self.arm1_pos, self.arm2_pos,
+                self.orx, self.ory, self.orz, self.orw,
+                self.angleX, self.angleY, self.angleZ)
 
     def get_arms_callback(self, msg):
 
@@ -90,10 +106,29 @@ class Environment(Node):
             self.linear_acceleration = imu_msg.linear_acceleration
             self.linear_acceleration_covariance = imu_msg.linear_acceleration_covariance
             self.total_movement = self.magnitude(self.angular_velocity)
+
+            self.orx = imu_msg.orientation.x
+            self.ory = imu_msg.orientation.y
+            self.orz = imu_msg.orientation.z
+            self.orw = imu_msg.orientation.w
+            self.angleX = imu_msg.angular_velocity.x
+            self.angleY = imu_msg.angular_velocity.y
+            self.angleZ =  imu_msg.angular_velocity.z
+
+
+            self.max_movement_f(reset=False)
         except ValueError:
             print("Couldn't get current movement")
     def magnitude(self, vector):
         return math.sqrt(vector.x**2 + vector.y**2 + vector.z**2)
+
+    def max_movement_f(self, reset=True):
+        if reset:
+            MM = self.max_movement
+            self.max_movement = 0
+            return MM
+        if self.total_movement > self.max_movement:
+            self.max_movement = self.total_movement
 
     def speed_apply(self):
         # apply speed valu to arms
@@ -105,9 +140,9 @@ class Environment(Node):
 
     def prep_jump(self):
         # prepare jump: arms go up and pull_engin goes down
-        self.input_thread = threading.Thread(target=self.arm_up)
-        self.input_thread.daemon = True
-        self.input_thread.start()
+        self.class_thread = threading.Thread(target=self.arm_up)
+        self.class_thread.daemon = True
+        self.class_thread.start()
 
         msg = Float64()
         msg.data = -2.0
@@ -115,18 +150,18 @@ class Environment(Node):
         self.jump_preped = True
 
     def jump(self):
-        self.input_thread = threading.Thread(target=self.arm_down)
-        self.input_thread.daemon = True
-        self.input_thread.start()
+        self.class_thread = threading.Thread(target=self.arm_down)
+        self.class_thread.daemon = True
+        self.class_thread.start()
         msg = Float64()
         msg.data = 20.0
         self.jump_pub.publish(msg)
         self.jump_preped = False
 
     def cancel_jump(self):
-        self.input_thread = threading.Thread(target=self.arm_down)
-        self.input_thread.daemon = True
-        self.input_thread.start()
+        self.class_thread = threading.Thread(target=self.arm_down)
+        self.class_thread.daemon = True
+        self.class_thread.start()
         msg = Float64()
         msg.data = 2.0
         self.jump_pub.publish(msg)
@@ -254,6 +289,12 @@ class Environment(Node):
             elif user_input == "d":
                 self.angle -= 1
                 self.turn()
+            elif user_input == "qq":
+                self.angle += 1
+                self.rotate()
+            elif user_input == "dd":
+                self.angle -= 1
+                self.rotate()
             elif user_input == "a":
                 self.speed_arm1 += 0.2
                 self.speed_arm2 -= 0.2

@@ -22,27 +22,29 @@ class launchfile():
 
     def launch_robot(self):
 
-        launch_thread = threading.Thread(target=self.run_side_function, args=self.args)
+        launch_thread = threading.Thread(target=self.run_function)
         launch_thread.start()
 
         self.run()
+        print("launch8")
 
         launch_thread.join()
 
-    def run_side_function(self, q_agent, interact_with_env, render=False):
-        self.result=self.side_function(q_agent, interact_with_env, render)
+    def run_function(self):
+        self.results = self.side_function(self.args)
 
         self.shutdown()
 
 def wait(a,b,c):
+        print("\n\n:")
+        print(a,b,c)
         time.sleep(4)
-        return (a,b,c)
+        return("yes")
 
 if __name__ == "__main__":
     bouncy_bot = launchfile(wait,(1,2,3))
     print("\n\nstart\n\n")
     bouncy_bot.launch_robot()
-    print("\n\nend\n\n")
     print(bouncy_bot.result)
 
 
