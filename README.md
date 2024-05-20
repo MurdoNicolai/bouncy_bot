@@ -9,20 +9,16 @@ This project simulates and trains a robot in an Ignition Gazebo world using ROS 
 1. Clone this repository to your local machine:
 
     ```bash
-    git clone https://github.com/your_username/project_name.git
+    git clone https://github.com/MurdoNicolai/bouncy_bot .git
     ```
 
 2. Navigate to the project directory:
 
     ```bash
-    cd project_name
+    cd bouncy_bot
     ```
 
-3. Install dependencies using pip:
-
-    ```bash
-    pip install -r requirements.txt
-    ```
+3. Make sure you have ROS 2, TensorFlow, and Ignition Gazebo installed on your system.
 
 ## Usage
 
@@ -65,4 +61,4 @@ First launch the world:
 
 ## Contributing
 
-Contributions are welcome! I am new to ros2 and ignition and will either update this or make a new version when I get better. 
+Contributions are welcome! I am new to ros2 and ignition and will either update this or make a new version when I get better.
