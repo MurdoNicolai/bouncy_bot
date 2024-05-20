@@ -13,7 +13,7 @@ def send_terminal_command(command):
         print("Command stderr:", e.stderr)
 
 def delete_robot():
-    delete_robot = "ign service -s /world/demo_world/remove --reqtype ignition.msgs.Entity --reptype ignition.msgs.Boolean --timeout 300 --req 'name: \"bouncy\" type: MODEL'"
+    delete_robot = "ign service -s /world/cp_world/remove --reqtype ignition.msgs.Entity --reptype ignition.msgs.Boolean --timeout 300 --req 'name: \"bouncy\" type: MODEL'"
     restart_world = "ign service -s /world/demo_world/control --reqtype ignition.msgs.WorldControl --reptype ignition.msgs.Boolean --timeout 2000 --req 'reset: {all: true}'"
     send_terminal_command(delete_robot)
 

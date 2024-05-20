@@ -44,10 +44,11 @@ class Move(Node):
                                                  qos_profile=1)
 
         # Start a thread to handle user input
-        # self.class_thread = threading.Thread(target=self.process_input)
-        # self.class_thread.daemon = True
-        # self.class_thread.start()
+        self.class_thread = threading.Thread(target=self.process_input)
+        self.class_thread.daemon = True
+        self.class_thread.start()
         self.reset()
+        self.state_size = 16
         print("ok")
 
     def reset(self):
@@ -60,13 +61,24 @@ class Move(Node):
         self.total_movement = 0.0
         self.max_movement = 0.0
 
+
         self.orx = 0.0
         self.ory = 0.0
         self.orz = 0.0
         self.orw = 0.0
-        self.angleX = 0.0
-        self.angleY = 0.0
-        self.angleZ = 0.0
+        self.angle_velocityX = 0.0
+        self.angle_velocityY = 0.0
+        self.angle_velocityZ = 0.0
+        self.linear_accelerationX = 0.0
+        self.linear_accelerationY = 0.0
+        self.linear_accelerationZ =  0.0
+        self.robot_anglex = 0.0 #same as self.or bu not from imu
+        self.robot_angley = 0.0
+        self.robot_anglez = 0.0
+        self.robot_anglew = 0.0
+        self.robot_positionx = 0.0
+        self.robot_positiony = 0.0
+        self.robot_positionz = 0.0
 
         self.jump()
 
@@ -74,8 +86,9 @@ class Move(Node):
     def return_state(self):
         return (self.speed_arm1, self.speed_arm2, self.angle,
                 int(self.jump_preped), self.arm1_pos, self.arm2_pos,
-                self.orx, self.ory, self.orz, self.orw,
-                self.angleX, self.angleY, self.angleZ)
+                self.robot_anglex, self.robot_angley, self.robot_anglez, self.robot_anglew,
+                self.angle_velocityX, self.angle_velocityY, self.angle_velocityZ,
+                self.robot_positionx, self.robot_positiony, self.robot_positionz)
 
     def get_arms_callback(self, msg):
 
@@ -91,6 +104,15 @@ class Move(Node):
                     x_angle = math.atan2(2*(quaternion.w*quaternion.x + quaternion.y*quaternion.z),
                                          1 - 2*(quaternion.x**2 + quaternion.y**2))
                     self.arm2_pos = x_angle
+                if transform.child_frame_id == 'bouncy':
+                    quaternion = transform.transform.rotation
+                    self.robot_anglex = transform.transform.rotation.x
+                    self.robot_angley = transform.transform.rotation.y
+                    self.robot_anglez = transform.transform.rotation.z
+                    self.robot_anglew = transform.transform.rotation.w
+                    self.robot_positionx = transform.transform.translation.x
+                    self.robot_positiony = transform.transform.translation.y
+                    self.robot_positionz = transform.transform.translation.z
 
         except ValueError:
             print("Joint 'rotating_arm' not found in message")
@@ -111,10 +133,12 @@ class Move(Node):
             self.ory = imu_msg.orientation.y
             self.orz = imu_msg.orientation.z
             self.orw = imu_msg.orientation.w
-            self.angleX = imu_msg.angular_velocity.x
-            self.angleY = imu_msg.angular_velocity.y
-            self.angleZ =  imu_msg.angular_velocity.z
-
+            self.angle_velocityX = imu_msg.angular_velocity.x
+            self.angle_velocityY = imu_msg.angular_velocity.y
+            self.angle_velocityZ =  imu_msg.angular_velocity.z
+            self.linear_accelerationX = imu_msg.linear_acceleration.x
+            self.linear_accelerationY = imu_msg.linear_acceleration.y
+            self.linear_accelerationZ =  imu_msg.linear_acceleration.z
 
             self.max_movement_f(reset=False)
         except ValueError:
@@ -269,6 +293,30 @@ class Move(Node):
                 elif user_input == " ":
                     self.prep_jump()
             self.speed_apply()
+            # print("Orientation (Quaternion):")
+            # print(f"  - X: {self.orx}")
+            # print(f"  - Y: {self.ory}")
+            # print(f"  - Z: {self.orz}")
+            # print(f"  - W: {self.orw}")
+
+            # print("Euler Angles:")
+            # print(f"  - X: {self.angle_velocityX}")
+            # print(f"  - Y: {self.angle_velocityY}")
+            # print(f"  - Z: {self.angle_velocityZ}")
+
+            # print("Linear Acceleration:")
+            # print(f"  - X: {self.linear_accelerationX}")
+            # print(f"  - Y: {self.linear_accelerationY}")
+            # print(f"  - Z: {self.linear_accelerationZ}")
+
+            # print("Speed:")
+            # print(f"  - X: {self.speedx}")
+            # print(f"  - Y: {self.speedy}")
+
+            # print("Pos:")
+            # print(f"  - X: {self.posx}")
+            # print(f"  - Y: {self.posy}")
+
 
     def ai_input(self, user_input):
         if self.jump_preped:

@@ -32,7 +32,7 @@ def generate_launch_description():
     # Declare Spawn Arguments
     declare_spawn_x = DeclareLaunchArgument('x', default_value=str(randx), description='Model Spawn X Axis Value')
     declare_spawn_y = DeclareLaunchArgument('y', default_value=str(randy), description='Model Spawn Y Axis Value')
-    declare_spawn_z = DeclareLaunchArgument('z', default_value='15', description='Model Spawn Z Axis Value')
+    declare_spawn_z = DeclareLaunchArgument('z', default_value='5', description='Model Spawn Z Axis Value')
 
     # Spawn Robot Node
     gz_spawn_entity = Node(
